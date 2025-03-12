@@ -1,47 +1,66 @@
 package co.feip.fefu2025
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
+import android.widget.TextView
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.util.Log
+import androidx.core.content.ContextCompat
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import co.feip.fefu2025.ui.theme.FEFU2025AndroidBaseRepoTheme
+
 
 class MainActivity : ComponentActivity() {
+    private var counter: Int = 0
+    private val internet = Internet()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContent {
-            FEFU2025AndroidBaseRepoTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "FEIP",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
-            }
+
+        setContentView(R.layout.activity)
+        val textView: TextView = findViewById(R.id.textView)
+        val counterTextView: TextView = findViewById(R.id.counterTextView)
+        textView.setOnClickListener {
+            counter++
+            counterTextView.text = counter.toString()
         }
+
+        ContextCompat.registerReceiver(
+            this,
+            internet,
+            IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION),
+            ContextCompat.RECEIVER_EXPORTED
+        )
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        unregisterReceiver(internet)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putInt("count", counter)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        counter = savedInstanceState.getInt("count")
+        findViewById<TextView>(R.id.counterTextView).text = "$counter"
     }
 }
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    FEFU2025AndroidBaseRepoTheme {
-        Greeting("Android")
+class Internet : BroadcastReceiver() {
+    override fun onReceive(context: Context, intent: Intent) {
+        val manager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val network = manager.activeNetwork
+        val capabilities = manager.getNetworkCapabilities(network)
+        val isConnected = capabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) == true
+        Log.d("Internet", if (isConnected) "Интернет доступен" else "Без доступа к интернету")
     }
+
 }
