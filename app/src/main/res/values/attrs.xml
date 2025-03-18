@@ -1,0 +1,8 @@
+<resources>
+    <declare-styleable name="MyView">
+        <attr name="genreName" format="string" />
+        <attr name="backgroundColor" format="color" />
+        <attr name="cornerRadius" format="dimension" />
+    </declare-styleable>
+</resources>
+
