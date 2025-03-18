@@ -2,11 +2,9 @@ package co.feip.fefu2025
 
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
-import android.view.View
 import android.widget.Button
 import androidx.activity.ComponentActivity
 import androidx.activity.enableEdgeToEdge
-import androidx.core.content.ContextCompat
 import kotlin.random.Random
 
 class MainActivity : ComponentActivity() {
