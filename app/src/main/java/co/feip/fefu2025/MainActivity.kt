@@ -1,47 +1,48 @@
 package co.feip.fefu2025
 
+import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
+import android.view.View
+import android.widget.Button
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import co.feip.fefu2025.ui.theme.FEFU2025AndroidBaseRepoTheme
+import androidx.core.content.ContextCompat
+import kotlin.random.Random
 
 class MainActivity : ComponentActivity() {
+    private lateinit var flexBoxLayout: FlexBoxLayout
+    private var itemCount = 0
+    private val genres = listOf("Сёнен", "Приключения", "Ужасы", "Комедия", "Повседневность", "Школа", "Музыка", "Спорт")
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContent {
-            FEFU2025AndroidBaseRepoTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "FEIP",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
-            }
+        setContentView(R.layout.activity)
+
+        flexBoxLayout = findViewById(R.id.flexBoxLayout)
+        val button: Button = findViewById(R.id.button)
+
+        button.setOnClickListener {
+            addNewAnimeGenreView()
         }
     }
-}
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
+    private fun addNewAnimeGenreView() {
+        itemCount++
+        val genreName = genres[(itemCount - 1) % genres.size ]
+        val animeGenreView = MyView(this).apply {
+            setGenreName(genreName)
+            val backgroundColor = Random.nextInt(0xFF000000.toInt(), 0xFFFFFFFF.toInt())
+            val cornerRadius = resources.getDimension(R.dimen.corner_radius)
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    FEFU2025AndroidBaseRepoTheme {
-        Greeting("Android")
+            // Создание и установка фона с округленными углами
+            val backgroundDrawable = GradientDrawable().apply {
+                setColor(backgroundColor)
+                setCornerRadius(cornerRadius)
+            }
+            background = backgroundDrawable
+        }
+
+        flexBoxLayout.addFlexItem(animeGenreView)
     }
 }
