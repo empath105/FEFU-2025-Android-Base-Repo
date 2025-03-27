@@ -7,6 +7,15 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.compose.ui.graphics.Color
+
+val pastelColors = listOf(
+    Color(0xFFFFE0B2),
+    Color(0xFFFFCCBC),
+    Color(0xFFBBDEFB),
+    Color(0xFFD1C4E9),
+    Color(0xFFF8BBD0)
+)
 
 class MyView : LinearLayout {
 
@@ -36,6 +45,7 @@ class MyView : LinearLayout {
                 val cornerRadius = typedArray.getDimension(R.styleable.MyView_cornerRadius, 0f)
 
                 setGenreName(genreName)
+                randomBackground()
 
 //                 Установка округлённой рамки
                 val backgroundDrawable = GradientDrawable().apply {
@@ -55,7 +65,8 @@ class MyView : LinearLayout {
         genreNameTextView.text = genreName ?: "Жанр аниме"
     }
 
-    override fun setBackgroundColor(color: Int) {
-        super.setBackgroundColor(color)
+    fun randomBackground(): Color {
+        return pastelColors.random()
     }
+
 }
