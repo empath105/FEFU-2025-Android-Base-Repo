@@ -1,0 +1,144 @@
+package co.feip.fefu2025
+
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.*
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+
+@Composable
+fun AnimeCard(
+    title: String,
+    rating: String,
+    genres: List<String>,
+    image: Painter,
+    year: String,
+    modifier: Modifier = Modifier
+) {
+    Card(
+        modifier = modifier
+            .padding(5.dp)
+            .height(300.dp)
+            .width(180.dp),
+    elevation = CardDefaults.cardElevation(15.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = Color(red = 245, green = 245, blue = 245)
+        )
+    ) {
+        Column(
+            modifier = modifier
+                .padding(10.dp)
+                .fillMaxSize()
+        ) {
+            Box{
+                Image(
+                    painter = image,
+                    contentDescription = title,
+                    modifier = modifier
+                        .fillMaxWidth()
+                        .height(225.dp)
+                        .clip(RoundedCornerShape(8.dp)),
+                    contentScale = ContentScale.FillBounds
+                )
+
+
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .background(Color.Black.copy(alpha = 0.8f), RoundedCornerShape(topEnd = 8.dp))
+                        .padding(10.dp)
+                ) {
+                    Text(
+                        text = "★ $rating",
+                        color = Color.Yellow,
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier
+                            .align(Alignment.TopEnd)
+                    )
+                }
+            }
+
+            Text(
+                text = title,
+                fontSize = 17.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = modifier.fillMaxWidth(),
+                textAlign = TextAlign.Center
+            )
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = "genre: ",
+                    fontSize = 10.sp,
+                    )
+                Text(
+                    text = genres.joinToString(", "),
+                    fontSize = 9.sp,
+                    fontWeight = FontWeight.Bold,
+                    )
+            }
+
+            Text(
+                text = year,
+                fontSize = 10.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = modifier
+                    .fillMaxWidth()
+                    .padding(2.dp),
+                textAlign = TextAlign.Center,
+
+            )
+        }
+
+    }
+
+}
+
+
+@Composable
+fun AnimeScreen() {
+    Row(
+        modifier = Modifier
+            .fillMaxSize(),
+    ) {
+        AnimeCard(
+            title = "BOCCHI THE ROCK!",
+            rating = "9.2",
+            genres = listOf("COMEDY", "MUSIC", "SLICE OF LIFE"),
+            image = painterResource(id = R.drawable.bocchitherock),
+            year = "2022"
+        )
+
+        AnimeCard(
+            title = "ELFEN LIED",
+            rating = "7.8",
+            genres = listOf("ROMANCE", "DRAMA", "HORROR"),
+            image = painterResource(id = R.drawable.elfenlied),
+            year = "2004"
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewAnimeScreen() {
+    AnimeScreen()
+}

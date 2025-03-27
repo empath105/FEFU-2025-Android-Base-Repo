@@ -24,13 +24,16 @@ class FlexBoxLayout : ViewGroup {
             val childWidth = child.measuredWidth
             val childHeight = child.measuredHeight
 
-            if (lineWidth + childWidth > width) {
+            val params = child.layoutParams as MarginLayoutParams
+            val margin = params.leftMargin + params.rightMargin
+
+            if (lineWidth + childWidth + margin > width) {
                 totalHeight += maxLineHeight
-                lineWidth = childWidth
-                maxLineHeight = childHeight
+                lineWidth = childWidth + margin
+                maxLineHeight = childHeight + params.topMargin + params.bottomMargin
             } else {
-                lineWidth += childWidth
-                maxLineHeight = maxOf(maxLineHeight, childHeight)
+                lineWidth += childWidth + margin
+                maxLineHeight = maxOf(maxLineHeight, childHeight + params.topMargin + params.bottomMargin)
             }
         }
 
@@ -50,15 +53,23 @@ class FlexBoxLayout : ViewGroup {
                 val childWidth = child.measuredWidth
                 val childHeight = child.measuredHeight
 
-                if (lineWidth + childWidth > width) {
+                val params = child.layoutParams as MarginLayoutParams
+                val margin = params.leftMargin + params.rightMargin
+
+                if (lineWidth + childWidth + margin > width) {
                     currentTop += lineHeight
                     lineWidth = 0
                     lineHeight = 0
                 }
 
-                child.layout(lineWidth, currentTop, lineWidth + childWidth, currentTop + childHeight)
-                lineWidth += childWidth
-                lineHeight = maxOf(lineHeight, childHeight)
+                child.layout(
+                    lineWidth + params.leftMargin,
+                    currentTop + params.topMargin,
+                    lineWidth + params.leftMargin + childWidth,
+                    currentTop + params.topMargin + childHeight
+                )
+                lineWidth += childWidth + margin
+                lineHeight = maxOf(lineHeight, childHeight + params.topMargin + params.bottomMargin)
             }
         }
     }
