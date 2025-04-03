@@ -33,7 +33,7 @@ class MainActivity : ComponentActivity() {
         val genreName = genres[(itemCount - 1) % genres.size ]
         val animeGenreView = MyView(this).apply {
             setGenreName(genreName)
-            val backgroundColor = randomBackground().toArgb()
+            val backgroundColor = pastelColors[(itemCount - 1) % pastelColors.size].toArgb()
             val cornerRadius = resources.getDimension(R.dimen.corner_radius)
 
             // Создание и установка фона с округленными углами
