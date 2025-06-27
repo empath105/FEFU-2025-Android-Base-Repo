@@ -126,33 +126,14 @@ fun AnimeCard(
 
 }
 
-
-@Composable
-fun AnimeScreen() {
-    Row(
-        modifier = Modifier
-            .fillMaxSize(),
-    ) {
-        AnimeCard(
-            title = "BOCCHI THE ROCK!",
-            rating = "9.2",
-            genres = listOf("COMEDY", "MUSIC", "SLICE OF LIFE"),
-            image = painterResource(id = R.drawable.bocchitherock),
-            year = "2022"
-        )
-
-        AnimeCard(
-            title = "ELFEN LIED",
-            rating = "7.8",
-            genres = listOf("ROMANCE", "DRAMA", "HORROR"),
-            image = painterResource(id = R.drawable.elfenlied),
-            year = "2004"
-        )
-    }
-}
-
 @Preview(showBackground = true)
 @Composable
 fun PreviewAnimeScreen() {
-    AnimeScreen()
+    AnimeCard(
+        title = "ELFEN LIED",
+        rating = "7.8",
+        genres = listOf("ROMANCE", "DRAMA", "HORROR"),
+        image = painterResource(id = R.drawable.elfenlied),
+        year = "2004"
+    )
 }
