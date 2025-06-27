@@ -47,7 +47,6 @@ class MyView : LinearLayout {
 
                 setGenreName(genreName)
 
-//                 Установка округлённой рамки
                 val backgroundDrawable = GradientDrawable().apply {
                     setColor(backgroundColor)
                     setCornerRadius(cornerRadius)
