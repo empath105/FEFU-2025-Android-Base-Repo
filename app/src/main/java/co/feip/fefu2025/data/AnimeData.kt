@@ -5,8 +5,7 @@ import co.feip.fefu2025.domain.models.Anime
 
 object AnimeData {
     fun getAnimeList(): List<Anime> {
-
-        val allAnime = listOf(
+        return listOf(
             Anime(
                 id = 1,
                 title = "BOCCHI THE ROCK!",
@@ -31,7 +30,7 @@ object AnimeData {
                 season = "1",
                 episodes = "12",
                 ratings = listOf(100, 80, 180, 220, 260, 270, 300, 340, 450, 500),
-                recommendationIds = listOf(2, 3, 4)
+                recommendationIds = listOf(1, 3, 4)
             ),
             Anime(
                 id = 3,
@@ -44,7 +43,7 @@ object AnimeData {
                 season = "1",
                 episodes = "13",
                 ratings = listOf(80, 70, 100, 120, 150, 180, 200, 220, 250, 300),
-                recommendationIds = listOf(4, 5, 6)
+                recommendationIds = listOf(2, 4, 1)
             ),
             Anime(
                 id = 4,
@@ -57,7 +56,7 @@ object AnimeData {
                 season = "1",
                 episodes = "12",
                 ratings = listOf(120, 150, 180, 200, 220, 250, 280, 300, 350, 400),
-                recommendationIds = listOf(1, 3, 5)
+                recommendationIds = listOf(1, 3, 2)
             ),
             Anime(
                 id = 5,
@@ -152,17 +151,5 @@ object AnimeData {
             )
 
         )
-
-        return allAnime.map { anime ->
-            anime.copy(
-                recommendations = anime.recommendationIds?.mapNotNull { id ->
-                    allAnime.find { it.id == id }
-                }
-            )
-        }
-    }
-
-    fun getAnimeById(id: Int): Anime? {
-        return getAnimeList().find { it.id == id }
     }
 }
