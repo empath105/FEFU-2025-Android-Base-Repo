@@ -45,20 +45,37 @@ fun AnimeCardInfo(
 ) {
     val viewModel: AnimeDetailsViewModel = viewModel(factory = viewModelFactory)
     val anime by viewModel.anime
+    val isLoading by viewModel.isLoading
+    val error by viewModel.error
 
-    if (anime != null) {
-        AnimeScreenContent(
-            anime = anime!!,
-            onAnimeClick = onAnimeClick,
-            onRecommendationsClick = { onRecommendationsClick(anime!!.id) },
-            onBackClick = onBackClick
-        )
-    } else {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            Text("Загрузка...")
+    Column(modifier = Modifier.fillMaxSize()) {
+        when {
+            isLoading -> {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator()
+                }
+            }
+            error != null -> {
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(error ?: "Произошла ошибка", color = Color.Red)
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Button(onClick = { viewModel.loadAnime() }) {
+                        Text("Повторить")
+                    }
+                }
+            }
+            anime != null -> {
+                AnimeScreenContent(
+                    anime = anime!!,
+                    onAnimeClick = onAnimeClick,
+                    onRecommendationsClick = { onRecommendationsClick(anime!!.id) },
+                    onBackClick = onBackClick
+                )
+            }
         }
     }
 }

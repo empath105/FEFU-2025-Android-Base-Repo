@@ -14,24 +14,25 @@ class RecommendationsViewModel(
 ) : ViewModel() {
     val recomendList = mutableStateOf<List<Anime>>(emptyList())
     val isLoading = mutableStateOf(false)
+    val error = mutableStateOf<String?>(null)
 
     init {
         loadRecommendations()
     }
 
-    private fun loadRecommendations() {
+    fun loadRecommendations() {
         viewModelScope.launch {
             isLoading.value = true
+            error.value = null
             try {
                 val recommendations = if (excludeAnimeId != null) {
                     getGlobalRecommendationsUseCase.invoke(excludeAnimeId)
                 } else {
                     getGlobalRecommendationsUseCase.invoke(0)
                 }
-
                 recomendList.value = recommendations
             } catch (e: Exception) {
-                e.printStackTrace()
+                error.value = e.message
                 recomendList.value = emptyList()
             } finally {
                 isLoading.value = false
