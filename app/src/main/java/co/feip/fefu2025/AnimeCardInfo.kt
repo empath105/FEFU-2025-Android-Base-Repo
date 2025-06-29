@@ -128,140 +128,140 @@ fun AnimeScreenContent(anime: Anime, onAnimeClick: (Int) -> Unit, onRecommendati
                 )
                 Spacer(modifier = Modifier.height(10.dp))
 
-    //            Row(
-    //                verticalAlignment = Alignment.CenterVertically,
-    //                modifier = Modifier
-    //                    .fillMaxWidth()
-    //                    .padding(horizontal = 20.dp),
-    //                horizontalArrangement = Arrangement.Start
-    //            ) {
-    //                Text(
-    //                    text = "Жанры:",
-    //                    fontSize = 16.sp,
-    //                    fontWeight = FontWeight.Bold,
-    //                )
-    //                FlexBoxLayoutGenre(
-    //                    genres = anime.genres,
-    //                    modifier = Modifier
-    //                        .fillMaxWidth()
-    //                        .padding(20.dp, 0.dp, 0.dp, 0.dp),
-    //
-    //                    )
-    //            }
-    //
-    //            Spacer(modifier = Modifier.height(10.dp))
-    //
-    //            Row(
-    //                verticalAlignment = Alignment.CenterVertically,
-    //                modifier = Modifier
-    //                    .fillMaxWidth()
-    //                    .padding(horizontal = 20.dp),
-    //                horizontalArrangement = Arrangement.Start
-    //            ) {
-    //                Text(
-    //                    text = "Год выпуска:",
-    //                    fontSize = 16.sp,
-    //                    fontWeight = FontWeight.Bold,
-    //                )
-    //                anime.year?.let{
-    //                    Text(
-    //                        text = it,
-    //                        fontSize = 16.sp,
-    //                        color = Color.Gray,
-    //                        fontWeight = FontWeight.Bold,
-    //                        modifier = Modifier
-    //                            .fillMaxWidth()
-    //                            .padding(horizontal = 10.dp),
-    //
-    //                        )
-    //                }
-    //            }
-    //
-    //            Spacer(modifier = Modifier.height(10.dp))
-    //
-    //            Row(
-    //                verticalAlignment = Alignment.CenterVertically,
-    //                modifier = Modifier
-    //                    .fillMaxWidth()
-    //                    .padding(horizontal = 20.dp),
-    //                horizontalArrangement = Arrangement.Start
-    //            ) {
-    //                Text(
-    //                    text = "Рейтинг:",
-    //                    fontSize = 16.sp,
-    //                    fontWeight = FontWeight.Bold,
-    //                )
-    //                Text(
-    //                    text = "${anime.rating}/10",
-    //                    fontSize = 16.sp,
-    //                    color = Color.Gray,
-    //                    fontWeight = FontWeight.Bold,
-    //                    modifier = Modifier
-    //                        .fillMaxWidth()
-    //                        .padding(horizontal = 10.dp),
-    //
-    //                    )
-    //            }
-    //
-    //            Spacer(modifier = Modifier.height(10.dp))
-    //
-    //            Text(
-    //                text = "Описание:",
-    //                fontSize = 16.sp,
-    //                fontWeight = FontWeight.Bold,
-    //                modifier = Modifier
-    //                    .fillMaxWidth()
-    //                    .padding(horizontal = 20.dp),
-    //            )
-    //
-    //            Spacer(modifier = Modifier.height(8.dp))
-    //
-    //            Column(
-    //                modifier = Modifier
-    //                    .fillMaxWidth()
-    //                    .padding(horizontal = 16.dp)
-    //                    .clip(RoundedCornerShape(20.dp))
-    //                    .background(color = Color(red = 248, green = 248, blue = 255))
-    //            ){
-    //                anime.description?.let{
-    //                    Text(
-    //                        text = it,
-    //                        fontSize = 16.sp,
-    //                        color = Color.Gray,
-    //                        modifier = Modifier
-    //                            .fillMaxWidth()
-    //                            .padding(horizontal = 16.dp, vertical = 13.dp),
-    //
-    //                        )
-    //                }
-    //
-    //            }
-    //
-    //            Spacer(modifier = Modifier.height(15.dp))
-    //            Text(
-    //                text = "Оценки людей:",
-    //                fontSize = 16.sp,
-    //                fontWeight = FontWeight.Bold,
-    //                modifier = Modifier
-    //                    .fillMaxWidth()
-    //                    .padding(horizontal = 20.dp),
-    //            )
-    //
-    //            Spacer(modifier = Modifier.height(8.dp))
-    //
-    //            Column (
-    //                modifier = Modifier
-    //                    .fillMaxWidth()
-    //                    .padding(horizontal = 15.dp)
-    //                    .clip(RoundedCornerShape(20.dp))
-    //
-    //            ) {
-    //                anime.ratings?.let{
-    //                    RaitingTable(it)
-    //                }
-    //            }
-    //
-    //            Spacer(modifier = Modifier.height(15.dp))
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp),
+                    horizontalArrangement = Arrangement.Start
+                ) {
+                    Text(
+                        text = "Жанры:",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                    )
+                    FlexBoxLayoutGenre(
+                        genres = anime.genres,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(20.dp, 0.dp, 0.dp, 0.dp),
+
+                        )
+                }
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp),
+                    horizontalArrangement = Arrangement.Start
+                ) {
+                    Text(
+                        text = "Год выпуска:",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                    )
+                    anime.year?.let{
+                        Text(
+                            text = it,
+                            fontSize = 16.sp,
+                            color = Color.Gray,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 10.dp),
+
+                            )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp),
+                    horizontalArrangement = Arrangement.Start
+                ) {
+                    Text(
+                        text = "Рейтинг:",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                    )
+                    Text(
+                        text = "${anime.rating}/10",
+                        fontSize = 16.sp,
+                        color = Color.Gray,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 10.dp),
+
+                        )
+                }
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                Text(
+                    text = "Описание:",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp),
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                        .clip(RoundedCornerShape(20.dp))
+                        .background(color = Color(red = 248, green = 248, blue = 255))
+                ){
+                    anime.description?.let{
+                        Text(
+                            text = it,
+                            fontSize = 16.sp,
+                            color = Color.Gray,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp, vertical = 13.dp),
+
+                            )
+                    }
+
+                }
+
+                Spacer(modifier = Modifier.height(15.dp))
+                Text(
+                    text = "Оценки людей:",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp),
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Column (
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 15.dp)
+                        .clip(RoundedCornerShape(20.dp))
+
+                ) {
+                    anime.ratings?.let{
+                        RaitingTable(it)
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(15.dp))
 
                 Text(
                     text = "Может понравиться:",
