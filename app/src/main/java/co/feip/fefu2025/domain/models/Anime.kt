@@ -12,5 +12,5 @@ data class Anime(
     val description: String? = null,
     val ratings: List<Int>? = null,
     val recommendationIds: List<Int>? = null,
-    val recommendations: List<Anime>? = null
+    val recommendations: List<Anime>? = emptyList()
 )

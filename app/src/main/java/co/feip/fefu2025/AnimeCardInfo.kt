@@ -8,6 +8,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -31,18 +32,27 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import co.feip.fefu2025.presentation.viewmodels.AnimeDetailsViewModel
 import co.feip.fefu2025.domain.models.Anime
 import androidx.compose.runtime.getValue
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 
 @Composable
 fun AnimeCardInfo(
     animeId: Int,
     viewModelFactory: AnimeDetailsViewModel.Factory,
-    onAnimeClick: (Int) -> Unit
+    onAnimeClick: (Int) -> Unit,
+    onRecommendationsClick: (Int) -> Unit,
+    onBackClick: () -> Unit
 ) {
     val viewModel: AnimeDetailsViewModel = viewModel(factory = viewModelFactory)
     val anime by viewModel.anime
 
     if (anime != null) {
-        AnimeScreenContent(anime!!, onAnimeClick)
+        AnimeScreenContent(
+            anime = anime!!,
+            onAnimeClick = onAnimeClick,
+            onRecommendationsClick = { onRecommendationsClick(anime!!.id) },
+            onBackClick = onBackClick
+        )
     } else {
         Box(
             modifier = Modifier.fillMaxSize(),
@@ -53,89 +63,136 @@ fun AnimeCardInfo(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AnimeScreenContent(anime: Anime, onAnimeClick: (Int) -> Unit) {
+fun AnimeScreenContent(anime: Anime, onAnimeClick: (Int) -> Unit, onRecommendationsClick: () -> Unit, onBackClick: () -> Unit) {
     val scrollState = rememberScrollState()
 
-    LazyColumn (
-        modifier = Modifier
-            .background(Color.White)
-            .fillMaxSize()
 
-    ){
-        item {
-            Image(
-                painter = painterResource(id = anime.imageResId),
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(350.dp)
-                    .shadow(elevation = 15.dp)
-                    .clip(RoundedCornerShape(bottomEnd = 20.dp)),
+    Column(modifier = Modifier.fillMaxSize()) {
+        LazyColumn (
+            modifier = Modifier
+                .fillMaxSize()
+        ){
+            item {
+                Box(modifier = Modifier.fillMaxWidth()) {
+                    Image(
+                        painter = painterResource(id = anime.imageResId),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(350.dp)
+                            .shadow(elevation = 15.dp)
+                            .clip(RoundedCornerShape(bottomEnd = 20.dp))
+                    )
 
-                )
+                    IconButton(
+                        onClick = onBackClick,
+                        modifier = Modifier
+                            .padding(16.dp)
+                            .background(
+                                color = Color.Black.copy(alpha = 0.5f),
+                                shape = RoundedCornerShape(50)
+                            )
+                            .size(40.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Назад",
+                            tint = Color.White,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
+                }
 
-            Spacer(modifier = Modifier.height(30.dp))
+                Spacer(modifier = Modifier.height(30.dp))
 
-            Text(
-                text = anime.title,
-                fontSize = 25.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.fillMaxWidth(),
-                textAlign = TextAlign.Center
-            )
-
-            Text(
-                text = "Season ${anime.season} · ${anime.episodes} eps",
-                fontSize = 14.sp,
-                color = Color.Gray,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(2.dp),
-                textAlign = TextAlign.Center,
-            )
-            Spacer(modifier = Modifier.height(10.dp))
-
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 20.dp),
-                horizontalArrangement = Arrangement.Start
-            ) {
                 Text(
-                    text = "Жанры:",
-                    fontSize = 16.sp,
+                    text = anime.title,
+                    fontSize = 25.sp,
                     fontWeight = FontWeight.Bold,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center
                 )
-                FlexBoxLayoutGenre(
-                    genres = anime.genres,
+
+                Text(
+                    text = "Season ${anime.season} · ${anime.episodes} eps",
+                    fontSize = 14.sp,
+                    color = Color.Gray,
+                    fontWeight = FontWeight.Bold,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(20.dp, 0.dp, 0.dp, 0.dp),
-
-                    )
-            }
-
-            Spacer(modifier = Modifier.height(10.dp))
-
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 20.dp),
-                horizontalArrangement = Arrangement.Start
-            ) {
-                Text(
-                    text = "Год выпуска:",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
+                        .padding(2.dp),
+                    textAlign = TextAlign.Center,
                 )
-                anime.year?.let{
+                Spacer(modifier = Modifier.height(10.dp))
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp),
+                    horizontalArrangement = Arrangement.Start
+                ) {
                     Text(
-                        text = it,
+                        text = "Жанры:",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                    )
+                    FlexBoxLayoutGenre(
+                        genres = anime.genres,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(20.dp, 0.dp, 0.dp, 0.dp),
+
+                        )
+                }
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp),
+                    horizontalArrangement = Arrangement.Start
+                ) {
+                    Text(
+                        text = "Год выпуска:",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                    )
+                    anime.year?.let{
+                        Text(
+                            text = it,
+                            fontSize = 16.sp,
+                            color = Color.Gray,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 10.dp),
+
+                            )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp),
+                    horizontalArrangement = Arrangement.Start
+                ) {
+                    Text(
+                        text = "Рейтинг:",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                    )
+                    Text(
+                        text = "${anime.rating}/10",
                         fontSize = 16.sp,
                         color = Color.Gray,
                         fontWeight = FontWeight.Bold,
@@ -145,132 +202,106 @@ fun AnimeScreenContent(anime: Anime, onAnimeClick: (Int) -> Unit) {
 
                         )
                 }
-            }
 
-            Spacer(modifier = Modifier.height(10.dp))
+                Spacer(modifier = Modifier.height(10.dp))
 
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 20.dp),
-                horizontalArrangement = Arrangement.Start
-            ) {
                 Text(
-                    text = "Рейтинг:",
+                    text = "Описание:",
                     fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                )
-                Text(
-                    text = "${anime.rating}/10",
-                    fontSize = 16.sp,
-                    color = Color.Gray,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 10.dp),
+                        .padding(horizontal = 20.dp),
+                )
 
-                    )
-            }
+                Spacer(modifier = Modifier.height(8.dp))
 
-            Spacer(modifier = Modifier.height(10.dp))
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                        .clip(RoundedCornerShape(20.dp))
+                        .background(color = Color(red = 248, green = 248, blue = 255))
+                ){
+                    anime.description?.let{
+                        Text(
+                            text = it,
+                            fontSize = 16.sp,
+                            color = Color.Gray,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp, vertical = 13.dp),
 
-            Text(
-                text = "Описание:",
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 20.dp),
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-                    .clip(RoundedCornerShape(20.dp))
-                    .background(color = Color(red = 248, green = 248, blue = 255))
-            ){
-                anime.description?.let{
-                    Text(
-                        text = it,
-                        fontSize = 16.sp,
-                        color = Color.Gray,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp, vertical = 13.dp),
-
-                        )
-                }
-
-            }
-
-            Spacer(modifier = Modifier.height(15.dp))
-            Text(
-                text = "Оценки людей:",
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 20.dp),
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Column (
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 15.dp)
-                    .clip(RoundedCornerShape(20.dp))
-
-            ) {
-                anime.ratings?.let{
-                    RaitingTable(it)
-                }
-            }
-
-            Spacer(modifier = Modifier.height(15.dp))
-
-            Text(
-                text = "Может понравиться:",
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 20.dp),
-            )
-
-            LazyRow(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(4.dp)
-            ) {
-                anime.recommendations?.let{
-                    items(it) { rec ->
-                        rec.year?.let{
-                            AnimeCard(
-                                title = rec.title,
-                                rating = rec.rating,
-                                genres = rec.genres,
-                                image = painterResource(id = rec.imageResId),
-                                year = rec.year,
-                                modifier = Modifier
-                                    .clickable { onAnimeClick(rec.id) }
                             )
+                    }
+
+                }
+
+                Spacer(modifier = Modifier.height(15.dp))
+                Text(
+                    text = "Оценки людей:",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp),
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Column (
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 15.dp)
+                        .clip(RoundedCornerShape(20.dp))
+
+                ) {
+                    anime.ratings?.let{
+                        RaitingTable(it)
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(15.dp))
+
+                Text(
+                    text = "Может понравиться:",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp)
+                        .clickable { onRecommendationsClick() }
+                )
+
+                LazyRow(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    anime.recommendations?.let{
+                        items(it) { rec ->
+                            rec.year?.let{
+                                AnimeCard(
+                                    title = rec.title,
+                                    rating = rec.rating,
+                                    genres = rec.genres,
+                                    image = painterResource(id = rec.imageResId),
+                                    year = rec.year,
+                                    modifier = Modifier
+                                        .clickable { onAnimeClick(rec.id) }
+                                )
+                            }
                         }
                     }
                 }
+
+                Spacer(modifier = Modifier.height(15.dp))
+
+
             }
 
-            Spacer(modifier = Modifier.height(15.dp))
-
-
         }
-
     }
-
 }
 
 @Composable
