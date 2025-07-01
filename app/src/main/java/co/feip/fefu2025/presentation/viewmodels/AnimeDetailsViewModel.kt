@@ -14,14 +14,25 @@ class AnimeDetailsViewModel(
 ) : ViewModel() {
 
     val anime = mutableStateOf<Anime?>(null)
+    val isLoading = mutableStateOf(false)
+    val error = mutableStateOf<String?>(null)
+
 
     init {
         loadAnime()
     }
 
-    private fun loadAnime() {
+    fun loadAnime() {
         viewModelScope.launch {
-            anime.value = getAnimeDetailUseCase(animeId)
+            isLoading.value = true
+            error.value = null
+            try {
+                anime.value = getAnimeDetailUseCase(animeId)
+            } catch (e: Exception) {
+                error.value = e.message
+            } finally {
+                isLoading.value = false
+            }
         }
     }
 

@@ -1,4 +1,4 @@
-package co.feip.fefu2025.presentation.navigation
+package co.feip.fefu2025.presentation.navigaition
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -12,13 +12,17 @@ import androidx.navigation.navDeepLink
 import co.feip.fefu2025.MainAnimeScreen
 import co.feip.fefu2025.MainRecommendationScreen
 import co.feip.fefu2025.AnimeCardInfo
+import co.feip.fefu2025.MainSearchScreen
 import co.feip.fefu2025.data.repository.AnimeRepositoryI
 import co.feip.fefu2025.domain.usecases.GetAnimeDetailsUseCase
 import co.feip.fefu2025.domain.usecases.GetAnimeListUseCase
 import co.feip.fefu2025.domain.usecases.GetGlobalRecommendationsUseCase
+import co.feip.fefu2025.domain.usecases.GetSearchUseCase
 import co.feip.fefu2025.presentation.viewmodels.AnimeListViewModel
 import co.feip.fefu2025.presentation.viewmodels.AnimeDetailsViewModel
 import co.feip.fefu2025.presentation.viewmodels.RecommendationsViewModel
+import co.feip.fefu2025.presentation.viewmodels.SearchViewModel
+
 
 @Composable
 fun Graph(modifier: Modifier = Modifier) {
@@ -38,6 +42,7 @@ fun Graph(modifier: Modifier = Modifier) {
                 factory = AnimeListViewModel.Factory(listUseCase)
             )
             MainAnimeScreen(
+                navController = navController,
                 viewModel = viewModel,
                 onAnimeClick = { id -> navController.navigate("anime/$id") }
             )
@@ -80,6 +85,20 @@ fun Graph(modifier: Modifier = Modifier) {
                 viewModel = viewModel,
                 onAnimeClick = { id -> navController.navigate("anime/$id") },
                 onBackClick = { navController.popBackStack() }
+            )
+        }
+
+
+        composable("search") {
+            val viewModel: SearchViewModel = viewModel(
+                factory = SearchViewModel.Factory(
+                    GetSearchUseCase(repository)
+                )
+            )
+            MainSearchScreen(
+                onBackClick = { navController.popBackStack() },
+                onAnimeClick = { id -> navController.navigate("anime/$id") },
+                viewModel = viewModel
             )
         }
     }
