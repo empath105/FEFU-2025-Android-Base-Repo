@@ -11,7 +11,7 @@ class AnimeRepositoryI : AnimeRepository {
     private val globalRecommendationIds = listOf(2, 3, 4, 5, 6, 7, 8, 9, 10, 11)
 
     override suspend fun getAnimeList(): List<Anime> {
-        delay(2000)
+        delay(1000)
         if (Random.nextBoolean()) throw Exception("Ошибка загрузки списка аниме")
         return allAnime
     }

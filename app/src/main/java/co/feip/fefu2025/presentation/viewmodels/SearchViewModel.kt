@@ -9,6 +9,7 @@ import co.feip.fefu2025.domain.usecases.GetSearchUseCase
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.coroutines.cancellation.CancellationException
 
 class SearchViewModel(
     private val searchAnimeUseCase: GetSearchUseCase
@@ -30,12 +31,17 @@ class SearchViewModel(
             error.value = null
             return
         }
-
+        isLoading.value = true
+        error.value = null
         searchJob = viewModelScope.launch {
-            isLoading.value = true
-            error.value = null
             try {
-                animeList.value = searchAnimeUseCase(query)
+                delay(300)
+                isLoading.value = true
+                error.value = null
+                val results = searchAnimeUseCase(query)
+                animeList.value = results
+            } catch (e: CancellationException) {
+
             } catch (e: Exception) {
                 error.value = e.message ?: "Ошибка поиска"
                 animeList.value = emptyList()
