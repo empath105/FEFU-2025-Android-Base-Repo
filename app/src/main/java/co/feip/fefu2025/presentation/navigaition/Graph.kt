@@ -31,6 +31,7 @@ fun Graph(modifier: Modifier = Modifier) {
     val listUseCase = GetAnimeListUseCase(repository)
     val detailUseCase = GetAnimeDetailsUseCase(repository)
     val recommendationsUseCase = GetGlobalRecommendationsUseCase(repository)
+    val searchUseCase = GetSearchUseCase(repository)
 
     NavHost(
         navController = navController,
@@ -50,8 +51,7 @@ fun Graph(modifier: Modifier = Modifier) {
 
         composable(
             route = "anime/{animeId}",
-            arguments = listOf(navArgument("animeId") { type = NavType.IntType }),
-            deepLinks = listOf(navDeepLink { uriPattern = "mysuperapp://anime/{animeId}" })
+            arguments = listOf(navArgument("animeId") { type = NavType.IntType })
         ) { backStackEntry ->
             val animeId = backStackEntry.arguments?.getInt("animeId") ?: return@composable
             val viewModelFactory = AnimeDetailsViewModel.Factory(detailUseCase, animeId)
@@ -69,9 +69,7 @@ fun Graph(modifier: Modifier = Modifier) {
 
         composable(
             route = "recommendations/{excludeAnimeId}",
-            arguments = listOf(navArgument("excludeAnimeId") {
-                type = NavType.IntType
-            })
+            arguments = listOf(navArgument("excludeAnimeId") { type = NavType.IntType })
         ) { backStackEntry ->
             val excludeAnimeId = backStackEntry.arguments?.getInt("excludeAnimeId") ?: 0
             val viewModel: RecommendationsViewModel = viewModel(
@@ -88,12 +86,9 @@ fun Graph(modifier: Modifier = Modifier) {
             )
         }
 
-
         composable("search") {
             val viewModel: SearchViewModel = viewModel(
-                factory = SearchViewModel.Factory(
-                    GetSearchUseCase(repository)
-                )
+                factory = SearchViewModel.Factory(searchUseCase)
             )
             MainSearchScreen(
                 onBackClick = { navController.popBackStack() },

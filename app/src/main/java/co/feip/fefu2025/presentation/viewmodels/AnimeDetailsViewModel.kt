@@ -12,26 +12,44 @@ class AnimeDetailsViewModel(
     private val getAnimeDetailUseCase: GetAnimeDetailsUseCase,
     private val animeId: Int
 ) : ViewModel() {
-
     val anime = mutableStateOf<Anime?>(null)
     val isLoading = mutableStateOf(false)
     val error = mutableStateOf<String?>(null)
-
+    val recommendationsLoading = mutableStateOf(false)
 
     init {
-        loadAnime()
+        loadAnimeData()
     }
 
-    fun loadAnime() {
+    fun loadAnimeData() {
         viewModelScope.launch {
             isLoading.value = true
             error.value = null
             try {
                 anime.value = getAnimeDetailUseCase(animeId)
             } catch (e: Exception) {
-                error.value = e.message
+                error.value = "Ошибка загрузки данных: ${e.message}"
             } finally {
                 isLoading.value = false
+            }
+        }
+    }
+
+    fun loadRecommendations() {
+        if (anime.value?.recommendations.isNullOrEmpty()) {
+            viewModelScope.launch {
+                recommendationsLoading.value = true
+                try {
+                    val current = anime.value ?: return@launch
+                    val updated = current.copy(
+                        recommendations = getAnimeDetailUseCase(current.id).recommendations
+                    )
+                    anime.value = updated
+                } catch (e: Exception) {
+                    error.value = "Ошибка загрузки рекомендаций: ${e.message}"
+                } finally {
+                    recommendationsLoading.value = false
+                }
             }
         }
     }

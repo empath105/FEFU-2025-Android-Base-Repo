@@ -84,7 +84,7 @@ fun MainRecommendationScreen(
                                 title = anime.title,
                                 rating = anime.rating,
                                 genres = anime.genres,
-                                image = painterResource(id = anime.imageResId),
+                                imageUrl = anime.imageUrl,
                                 year = it,
                                 modifier = Modifier
                                     .clickable { onAnimeClick(anime.id) }
