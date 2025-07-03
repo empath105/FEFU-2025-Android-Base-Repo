@@ -26,16 +26,18 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 
 @Composable
 fun AnimeCard(
     title: String,
     rating: String,
     genres: List<String>,
-    image: Painter,
+    imageUrl: String?,
     year: String,
     modifier: Modifier = Modifier
 ) {
@@ -44,7 +46,7 @@ fun AnimeCard(
             .padding(5.dp)
             .height(290.dp)
             .width(185.dp),
-    elevation = CardDefaults.cardElevation(15.dp),
+        elevation = CardDefaults.cardElevation(15.dp),
         colors = CardDefaults.cardColors(
             containerColor = Color(red = 245, green = 245, blue = 245)
         )
@@ -58,14 +60,16 @@ fun AnimeCard(
                 modifier = Modifier
                     .padding(horizontal = 10.dp)
             ){
-                Image(
-                    painter = image,
+                AsyncImage(
+                    model = imageUrl,
                     contentDescription = title,
                     modifier = modifier
                         .fillMaxWidth()
                         .height(225.dp)
                         .clip(RoundedCornerShape(8.dp)),
-                    contentScale = ContentScale.FillBounds
+                    contentScale = ContentScale.Crop,
+                    placeholder = painterResource(R.drawable.bocchitherock),
+                    error = painterResource(R.drawable.bocchitherock)
                 )
 
 
@@ -91,7 +95,9 @@ fun AnimeCard(
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = modifier.fillMaxWidth(),
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
 
             Row(
@@ -104,9 +110,11 @@ fun AnimeCard(
                     fontSize = 11.sp,
                     )
                 Text(
-                    text = genres.joinToString(", "),
+                    text = genres.take(3).joinToString(", "),
                     fontSize = 10.sp,
                     fontWeight = FontWeight.Bold,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                     )
             }
 
@@ -124,16 +132,4 @@ fun AnimeCard(
 
     }
 
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewAnimeScreen() {
-    AnimeCard(
-        title = "ELFEN LIED",
-        rating = "7.8",
-        genres = listOf("ROMANCE", "DRAMA", "HORROR"),
-        image = painterResource(id = R.drawable.elfenlied),
-        year = "2004"
-    )
 }

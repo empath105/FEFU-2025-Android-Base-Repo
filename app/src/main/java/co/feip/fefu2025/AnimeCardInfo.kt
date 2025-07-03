@@ -3,12 +3,10 @@ package co.feip.fefu2025
 import android.content.Context
 import android.graphics.drawable.GradientDrawable
 import android.view.ViewGroup
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -16,7 +14,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -34,6 +31,9 @@ import co.feip.fefu2025.domain.models.Anime
 import androidx.compose.runtime.getValue
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import coil.compose.AsyncImage
 
 @Composable
 fun AnimeCardInfo(
@@ -47,6 +47,7 @@ fun AnimeCardInfo(
     val anime by viewModel.anime
     val isLoading by viewModel.isLoading
     val error by viewModel.error
+    val areRecommendationsLoading = remember { mutableStateOf(false) }
 
     Column(modifier = Modifier.fillMaxSize()) {
         when {
@@ -63,7 +64,8 @@ fun AnimeCardInfo(
                 ) {
                     Text(error ?: "Произошла ошибка", color = Color.Red)
                     Spacer(modifier = Modifier.height(16.dp))
-                    Button(onClick = { viewModel.loadAnime() }) {
+                    Button(onClick = { viewModel.loadAnimeData()
+                        viewModel.loadRecommendations()}) {
                         Text("Повторить")
                     }
                 }
@@ -71,8 +73,12 @@ fun AnimeCardInfo(
             anime != null -> {
                 AnimeScreenContent(
                     anime = anime!!,
+                    areRecommendationsLoading = areRecommendationsLoading.value,
                     onAnimeClick = onAnimeClick,
-                    onRecommendationsClick = { onRecommendationsClick(anime!!.id) },
+                    onRecommendationsClick = {
+                        areRecommendationsLoading.value = true
+                        onRecommendationsClick(anime!!.id)
+                    },
                     onBackClick = onBackClick
                 )
             }
@@ -82,7 +88,13 @@ fun AnimeCardInfo(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AnimeScreenContent(anime: Anime, onAnimeClick: (Int) -> Unit, onRecommendationsClick: () -> Unit, onBackClick: () -> Unit) {
+fun AnimeScreenContent(
+    anime: Anime,
+    onAnimeClick: (Int) -> Unit,
+    onRecommendationsClick: () -> Unit,
+    onBackClick: () -> Unit,
+    areRecommendationsLoading: Boolean
+) {
     val scrollState = rememberScrollState()
 
 
@@ -93,8 +105,8 @@ fun AnimeScreenContent(anime: Anime, onAnimeClick: (Int) -> Unit, onRecommendati
         ){
             item {
                 Box(modifier = Modifier.fillMaxWidth()) {
-                    Image(
-                        painter = painterResource(id = anime.imageResId),
+                    AsyncImage(
+                        model = anime.imageUrl,
                         contentDescription = null,
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
@@ -273,8 +285,8 @@ fun AnimeScreenContent(anime: Anime, onAnimeClick: (Int) -> Unit, onRecommendati
                         .clip(RoundedCornerShape(20.dp))
 
                 ) {
-                    anime.ratings?.let{
-                        RaitingTable(it)
+                    anime.ratings.takeIf { it.isNotEmpty() }?.let { ratings ->
+                        RaitingTable(ratings)
                     }
                 }
 
@@ -289,25 +301,39 @@ fun AnimeScreenContent(anime: Anime, onAnimeClick: (Int) -> Unit, onRecommendati
                         .padding(horizontal = 20.dp)
                         .clickable { onRecommendationsClick() }
                 )
-
-                LazyRow(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(4.dp)
-                ) {
-                    anime.recommendations?.let{
-                        items(it) { rec ->
-                            rec.year?.let{
-                                AnimeCard(
-                                    title = rec.title,
-                                    rating = rec.rating,
-                                    genres = rec.genres,
-                                    image = painterResource(id = rec.imageResId),
-                                    year = rec.year,
-                                    modifier = Modifier
-                                        .clickable { onAnimeClick(rec.id) }
-                                )
-                            }
+                if (areRecommendationsLoading) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(200.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator()
+                    }
+                } else if (anime.recommendations.isEmpty()) {
+                    Text(
+                        text = "Рекомендации не найдены",
+                        color = Color.Gray,
+                        modifier = Modifier.padding(16.dp)
+                    )
+                } else {
+                    LazyRow(
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        contentPadding = PaddingValues(horizontal = 8.dp)
+                    ) {
+                        items(anime.recommendations.filter {
+                            it.title.isNotEmpty() && it.imageUrl?.isNotEmpty() == true
+                        }) { recommendation ->
+                            AnimeCard(
+                                title = recommendation.title,
+                                rating = recommendation.rating,
+                                genres = recommendation.genres,
+                                imageUrl = recommendation.imageUrl,
+                                year = recommendation.year ?: "N/A",
+                                modifier = Modifier
+                                    .width(160.dp)
+                                    .clickable { onAnimeClick(recommendation.id) }
+                            )
                         }
                     }
                 }

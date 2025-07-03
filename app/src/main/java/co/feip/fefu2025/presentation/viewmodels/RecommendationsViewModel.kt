@@ -26,9 +26,9 @@ class RecommendationsViewModel(
             error.value = null
             try {
                 val recommendations = if (excludeAnimeId != null) {
-                    getGlobalRecommendationsUseCase.invoke(excludeAnimeId)
+                    getGlobalRecommendationsUseCase(excludeAnimeId)
                 } else {
-                    getGlobalRecommendationsUseCase.invoke(0)
+                    getGlobalRecommendationsUseCase(0)
                 }
                 recomendList.value = recommendations
             } catch (e: Exception) {

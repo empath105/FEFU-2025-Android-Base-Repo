@@ -36,15 +36,33 @@ fun MainAnimeScreen(
     val error by viewModel.error
     val scrollState = rememberScrollState()
 
+
     Column(
         modifier = Modifier
             .background(Color.White)
             .fillMaxSize(),
     ) {
         when {
-            isLoading -> {
+            isLoading && animeList.isEmpty() -> {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     CircularProgressIndicator()
+                }
+            }
+
+            error != null && animeList.isEmpty() -> {
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = error ?: "Произошла ошибка",
+                        color = Color.Red
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Button(onClick = { viewModel.retryLoading() }) {
+                        Text("Повторить")
+                    }
                 }
             }
 
@@ -56,7 +74,7 @@ fun MainAnimeScreen(
                 ) {
                     Text(error ?: "Произошла ошибка", color = Color.Red)
                     Spacer(modifier = Modifier.height(16.dp))
-                    Button(onClick = { viewModel.loadAnimeList() }) {
+                    Button(onClick = { viewModel.retryLoading() }) {
                         Text("Повторить")
                     }
                 }
@@ -75,29 +93,39 @@ fun MainAnimeScreen(
                     modifier = Modifier
                         .background(Color.White)
                         .fillMaxSize(),
+                    contentPadding = PaddingValues(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     items(animeList) { an ->
-                        an.year?.let {
-                            AnimeCard(
-                                title = an.title,
-                                rating = an.rating,
-                                genres = an.genres,
-                                image = painterResource(id = an.imageResId),
-                                year = it,
-                                modifier = Modifier
-                                    .clickable { onAnimeClick(an.id) }
-                            )
-                        }
+                        AnimeCard(
+                            title = an.title,
+                            rating = an.rating,
+                            genres = an.genres,
+                            imageUrl = an.imageUrl,
+                            year = an.year ?: "N/A",
+                            modifier = Modifier.clickable { onAnimeClick(an.id) }
+                        )
                     }
+
                     item {
-                        Spacer(modifier = Modifier.height(8.dp))
+                        if (viewModel.isLoading.value && viewModel.hasNextPage) {
+                            CircularProgressIndicator(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp)
+                            )
+                        } else if (viewModel.hasNextPage) {
+                            LaunchedEffect(Unit) {
+                                viewModel.loadMoreData()
+                            }
+                        }
                     }
                 }
             }
         }
     }
 }
-
 @Composable
 fun SearchPlaceholder(
     modifier: Modifier = Modifier,

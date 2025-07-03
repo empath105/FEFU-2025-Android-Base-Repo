@@ -5,12 +5,12 @@ data class Anime(
     val title: String,
     val rating: String,
     val genres: List<String>,
-    val imageResId: Int,
+    val imageUrl: String?,
     val year: String? = null,
     val season: String? = null,
     val episodes: String? = null,
     val description: String? = null,
-    val ratings: List<Int>? = null,
-    val recommendationIds: List<Int>? = null,
-    val recommendations: List<Anime>? = emptyList()
+    val ratings: List<Int> = emptyList(),
+    val recommendationIds: List<Int> = emptyList(),
+    val recommendations: List<Anime> = emptyList()
 )
